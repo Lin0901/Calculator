@@ -16,20 +16,69 @@ namespace Calculator
             //返回当前字符在字符串中的位置 
             if(numAndPoint.IndexOf(num) >= 0)
             {
-                // 说明 是 "0,1,2,3,4,5,6,7,8,9,." 这一堆
-
+                //说明 是 "0,1,2,3,4,5,6,7,8,9,." 这一堆
+                ShowTextBox += num;
             }
             else
             {
-                // 说明 不是"0,1,2,3,4,5,6,7,8,9,." 这一堆，而是符号
+                //说明 不是"0,1,2,3,4,5,6,7,8,9,." 这一堆，而是符号
+                //如果默认没有输入数字，点击加减乘除不走解析逻辑
+                if(!string.IsNullOrEmpty(ShowTextBox))
+                {
+                    //不为空的时候 非数字 判断最后一位 substing（截取的开始位置，截取长度），也就是说 截取最后一位
+                    string lastString = ShowTextBox.Substring(ShowTextBox.Length - 1, 1);
+                    //再次核查位置
+                    if(numAndPoint.IndexOf(lastString) >= 0)
+                    {
+                        //如果最后是一个数字，则把之前的算一遍，再追加新的计算符号
+                        ShowTextBox = Operation(num);
+                    }
+                }
 
             }
 
 
             //全局表达式变量累计
-            ShowTextBox += num;
+            
             result.Text = ShowTextBox;
         }
+
+        public string Operation(string symbol)
+        {
+            if (ShowTextBox.Contains("+"))
+            {
+                // split方法切割字符串  1 + 1  拆成  1 ，1 ，new char 是制定符号；  然后再给一个参数，
+                // StringSplitOptions.RemoveEmptyEntries 排除空格空隙 排除空值
+                string[] way = ShowTextBox.Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries);
+                // left way right
+                //如果是字符串1+字符串1 会得到 11，要变成数值类型向家才会执行数学计算。
+                ShowTextBox = (Convert.ToDecimal(way[0]) + Convert.ToDecimal(way[1])).ToString();
+            }
+            else if (ShowTextBox.Contains("-"))
+            {
+                string[] way = ShowTextBox.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+                ShowTextBox = (Convert.ToDecimal(way[0]) - Convert.ToDecimal(way[1])).ToString();
+            }
+            else if (ShowTextBox.Contains("*"))
+            {
+                string[] way = ShowTextBox.Split(new char[] { '*' }, StringSplitOptions.RemoveEmptyEntries);
+                ShowTextBox = (Convert.ToDecimal(way[0]) * Convert.ToDecimal(way[1])).ToString();
+            }
+            else if (ShowTextBox.Contains("/"))
+            {
+                string[] way = ShowTextBox.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                ShowTextBox = (Convert.ToDecimal(way[0]) / Convert.ToDecimal(way[1])).ToString();
+            }
+
+            if (symbol != "=")
+            {
+                ShowTextBox += symbol;
+            }
+            
+            return ShowTextBox;
+        }
+
+
 
         private void result_TextChanged(object sender, EventArgs e)
         {
@@ -91,6 +140,7 @@ namespace Calculator
         private void add_Click(object sender, EventArgs e)
         {
             NumAndSymbol("+");
+
         }
         private void minus_Click(object sender, EventArgs e)
         {
@@ -109,7 +159,7 @@ namespace Calculator
 
         private void equal_Click(object sender, EventArgs e)
         {
-
+            result.Text = Operation("=");
         }
         private void clear_Click(object sender, EventArgs e)
         {

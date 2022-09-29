@@ -36,10 +36,7 @@ namespace Calculator
                 }
 
             }
-
-
-            //全局表达式变量累计
-            
+            //全局表达式变量累计    
             result.Text = ShowTextBox;
         }
 
@@ -67,7 +64,15 @@ namespace Calculator
             else if (ShowTextBox.Contains("/"))
             {
                 string[] way = ShowTextBox.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-                ShowTextBox = (Convert.ToDecimal(way[0]) / Convert.ToDecimal(way[1])).ToString();
+                if (Convert.ToDecimal(way[1]) != 0)
+                {
+                    ShowTextBox = (Convert.ToDecimal(way[0]) / Convert.ToDecimal(way[1])).ToString();
+                }
+                else
+                {
+                    ShowTextBox = "0";
+                }
+                
             }
 
             if (symbol != "=")
@@ -163,7 +168,8 @@ namespace Calculator
         }
         private void clear_Click(object sender, EventArgs e)
         {
-
+            ShowTextBox = "";
+            result.Text = "0";
         }
 
         private void BIN_Click(object sender, EventArgs e)

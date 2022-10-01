@@ -37,7 +37,7 @@ namespace Calculator
 
             }
             //全局表达式变量累计    
-            result.Text = ShowTextBox;
+            result2.Text = ShowTextBox;
         }
 
         public string Operation(string symbol)
@@ -51,9 +51,10 @@ namespace Calculator
                 //如果是字符串1+字符串1 会得到 11，要变成数值类型向家才会执行数学计算。
                 ShowTextBox = (Convert.ToDecimal(way[0]) + Convert.ToDecimal(way[1])).ToString();
             }
-            else if (ShowTextBox.Contains("-"))
+            else if (ShowTextBox.Contains("－"))
             {
-                string[] way = ShowTextBox.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+
+                string[] way = ShowTextBox.Split(new char[] { '－' }, StringSplitOptions.RemoveEmptyEntries);
                 ShowTextBox = (Convert.ToDecimal(way[0]) - Convert.ToDecimal(way[1])).ToString();
             }
             else if (ShowTextBox.Contains("*"))
@@ -71,8 +72,7 @@ namespace Calculator
                 else
                 {
                     ShowTextBox = "0";
-                }
-                
+                }    
             }
 
             if (symbol != "=")
@@ -83,11 +83,18 @@ namespace Calculator
             return ShowTextBox;
         }
 
-
+        public string BINDECLOC(string n)
+        {
+            return ShowTextBox;
+        }
 
         private void result_TextChanged(object sender, EventArgs e)
         {
-            
+            //上输出框
+        }
+        private void result2_TextChanged(object sender, EventArgs e)
+        {
+            //下输出框
         }
         private void n7_Click(object sender, EventArgs e)
         {
@@ -149,7 +156,7 @@ namespace Calculator
         }
         private void minus_Click(object sender, EventArgs e)
         {
-            NumAndSymbol("-");
+            NumAndSymbol("－");
         }
 
         private void multiply_Click(object sender, EventArgs e)
@@ -169,23 +176,27 @@ namespace Calculator
         private void clear_Click(object sender, EventArgs e)
         {
             ShowTextBox = "";
-            result.Text = "0";
+            result.Text = "";
         }
 
         private void BIN_Click(object sender, EventArgs e)
         {
+            //二进制
 
         }
 
         private void DEC_Click(object sender, EventArgs e)
         {
-
+            //十进制
+            NumAndSymbol("DEC");
         }
 
         private void LOC_Click(object sender, EventArgs e)
         {
-
+            //八进制
+            NumAndSymbol("LOC");
         }
+
 
     }
 }

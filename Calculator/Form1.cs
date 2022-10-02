@@ -16,8 +16,9 @@ namespace Calculator
         {
             //判断输入的是不是数字或者小数点
             string numAndPoint = "0,1,2,3,4,5,6,7,8,9,.";
+
             //返回当前字符在字符串中的位置 
-            if(numAndPoint.IndexOf(num) >= 0)
+            if (numAndPoint.IndexOf(num) >= 0)
             {
                 //说明 是 "0,1,2,3,4,5,6,7,8,9,." 这一堆
                 ShowTextBox += num;
@@ -39,6 +40,8 @@ namespace Calculator
                 }
 
             }
+
+            
             //全局表达式变量累计    
             result2.Text = ShowTextBox;
         }
@@ -151,6 +154,7 @@ namespace Calculator
         private void point_Click(object sender, EventArgs e)
         {
             NumAndSymbol(".");
+
         }
         private void add_Click(object sender, EventArgs e)
         {
@@ -190,6 +194,25 @@ namespace Calculator
                 result.Text = "";
                 result2.Text = "";
                 return;
+            }
+
+            // 这里显示的是 BIN to LOC ，因为 result2 = LOC 则开始进行以下程序。
+            if (result2.Text == "LOC")
+            {
+                // using ASCII code 
+                double show = 0;
+                int lengh = result.Text.Length;
+                string temp = result.Text.ToString();
+                result.Text = "";
+
+                for (int x = lengh - 1; x >= 0; x--)
+                {
+                    int pow = (int)temp[x] - 97;
+                    show += Math.Pow(2, pow);
+                }
+
+                result.Text = DecToBin(show).ToString();
+                result2.Text = "BIN";
             }
 
             else
@@ -245,13 +268,14 @@ namespace Calculator
         private void DEC_Click(object sender, EventArgs e)
         {
             //十进制
-            if (result.Text.Any(i => char.IsLetter(i)))
+            // 这里显示的是 LOC to DEC ，因为 result2 = LOC 则开始进行以下程序。
+            if (result2.Text == "LOC")
             {
                 double end = 0;
                 int lengh = result.Text.Length;
                 string s = result.Text.ToString();
 
-            // Pow  2 是底数 ， pow 是指数。  这个是指数函数。   97 是因为 ASCII表 a=97。
+            // Pow  2 是底数 ， pow 是指数。  这个是指数函数。97 是因为 ASCII表 a=97。
                 for (int x = lengh - 1; x >= 0; x--)
                 {
                     int pow = (int)s[x] - 97;
@@ -264,20 +288,75 @@ namespace Calculator
 
             else
             {
-                double Dec = 0;
-                for (int i = 0; i < result.Text.Length; i++)
+                double NumDec = 0;
+
+                for (int x = 0; x < result.Text.Length; x++)
                 {
-                    Dec += double.Parse(result.Text[result.Text.Length - 1 - i].ToString()) * Math.Pow(2, i);
+                    NumDec += double.Parse(result.Text[result.Text.Length - x - 1].ToString()) * Math.Pow(2, x);
                 }
-                result.Text = Dec.ToString();
+
+                result.Text = NumDec.ToString();
                 result2.Text = "DEC";
             }
         }
 
         private void LOC_Click(object sender, EventArgs e)
         {
-            //八进制
-            NumAndSymbol("LOC");
+            //十进制转换成位置数字
+            // LOC 与 BIN 之间的相互转换
+            if (result2.Text == "BIN")
+            {     
+                var Bin = result.Text;
+                var resultLength = result.Text.Count();
+                result.Text = "";
+
+                for (int x = 0; x < resultLength; x++)
+                {
+                    if (Bin[x] == '1')
+                    {
+                        result.Text += (char)(resultLength - 1 + 97 - x);
+                    }
+                }
+                var charArr = result.Text.ToCharArray();
+                Array.Reverse(charArr);
+
+                result.Text = new String(charArr);
+                result2.Text = "LOC";
+            }
+            else
+            {
+                // 这里指的是与其他方面的互换
+                double num = double.Parse(result.Text);
+                int maxIndex = 0; 
+                result.Text = "";
+
+                // 指数的增加
+                while (Math.Pow(2, maxIndex) <= num)
+                {
+                    maxIndex++;
+                }
+
+                //字母变换写法   a = 97
+                for (int x = maxIndex - 1; x >= 0; x--)
+                {
+                    if (num >= Math.Pow(2, x))
+                    {
+                        num = num - Math.Pow(2, x);
+                        int ascii = x + 97;
+                        result.Text += $"{(char)ascii}";
+                    }
+
+                }
+                //如果有字母的显示 则变换成LOC
+                var arrayOfChar = result.Text.ToCharArray();
+                if (arrayOfChar.All(a => char.IsLetter(a)))
+                {
+                    Array.Reverse(arrayOfChar);
+
+                    result.Text = new String(arrayOfChar);
+                    result2.Text = "LOC";
+                }
+            }
         }
 
 

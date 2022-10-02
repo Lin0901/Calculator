@@ -217,6 +217,18 @@ namespace Calculator
 
             else
             {
+                if(result.Text == "Error")
+                {
+                    clear.PerformClick();
+                    return;
+                }
+                if (decimal.Parse(result.Text) < 0 || result.Text.Contains('.'))
+                {
+                    result.Text = "Error";
+                    result2.Text = "";
+
+                    return;
+                }
                 // 输入第一个数字 可以使用Bin
                 try
                 {

@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+
 namespace Calculator
 {
     public partial class Form1 : Form
@@ -177,18 +180,98 @@ namespace Calculator
         {
             ShowTextBox = "";
             result.Text = "";
+            result2.Text = "";
         }
 
         private void BIN_Click(object sender, EventArgs e)
         {
-            //二进制
+            if (result.Text == "Error")
+            {
+                result.Text = "";
+                result2.Text = "";
+                return;
+            }
 
+            else
+            {
+                // 输入第一个数字 可以使用Bin
+                try
+                {
+                    double num1 = double.Parse(result2.Text);
+                    result.Text = DecToBin(num1).ToString();
+                    result2.Text = "BIN";
+                }
+                // 输入程序得到的结果 使用Bin
+                catch
+                {
+                    double num2 = double.Parse(result.Text);
+                    result.Text = DecToBin(num2).ToString();
+                    result2.Text = "BIN";
+                }
+            }
+
+        }
+        private double DecToBin(double num)
+        {
+            //设立三个空值
+            double max = 0;
+            int maxNum = 0;
+            string BinNum = "";
+
+            //maxNum是从0开始到最大的指数
+            while (Math.Pow(2, maxNum) <= num)
+            {
+                maxNum++;
+            }
+
+            //计算 如果 >= 就记录1， 否则记录0
+            for (int x = maxNum - 1; x >= 0; x--)
+            {
+                if (num >= Math.Pow(2, x))
+                {
+                    num = num - Math.Pow(2, x);
+                    BinNum += "1";
+                }
+                else
+                {
+                    BinNum += "0";
+                }
+            }
+            //将数字的字符串表示形式转换为其等效的 32 位有符号整数
+            max = double.Parse(BinNum);
+            return max;
         }
 
         private void DEC_Click(object sender, EventArgs e)
         {
             //十进制
-            NumAndSymbol("DEC");
+            if (result.Text.Any(i => char.IsLetter(i)))
+            {
+                double end = 0;
+                int lengh = result.Text.Length;
+                string s = result.Text.ToString();
+
+            // Pow  2 是底数 ， pow 是指数。  这个是指数函数。   97 是因为 ASCII表 a=97。
+                for (int x = lengh - 1; x >= 0; x--)
+                {
+                    int pow = (int)s[x] - 97;
+                    end += Math.Pow(2, pow);
+                }
+                //两个方框的内容显示
+                result.Text = end.ToString();
+                result2.Text = "DEC";
+            }
+
+            else
+            {
+                double Dec = 0;
+                for (int i = 0; i < result.Text.Length; i++)
+                {
+                    Dec += double.Parse(result.Text[result.Text.Length - 1 - i].ToString()) * Math.Pow(2, i);
+                }
+                result.Text = Dec.ToString();
+                result2.Text = "DEC";
+            }
         }
 
         private void LOC_Click(object sender, EventArgs e)

@@ -153,6 +153,7 @@ namespace Calculator
 
         private void point_Click(object sender, EventArgs e)
         {
+            
             NumAndSymbol(".");
 
         }
